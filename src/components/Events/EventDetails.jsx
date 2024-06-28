@@ -10,7 +10,7 @@ export default function EventDetails() {
 	const { id } = useParams()
 	const navigate = useNavigate()
 	const { data, isPending, isError, error } = useQuery({
-		queryKey: [id],
+		queryKey: ['events', id],
 		queryFn: ({ signal }) => {
 			return fetchEvent({ id, signal })
 		},
@@ -19,7 +19,7 @@ export default function EventDetails() {
 	const { mutate } = useMutation({
 		mutationFn: deleteEvent,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['events'] })
+			queryClient.invalidateQueries({ queryKey: ['events'], refetchType: 'none' })
 			navigate('../')
 		},
 	})
