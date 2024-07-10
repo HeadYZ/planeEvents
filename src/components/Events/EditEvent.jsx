@@ -5,13 +5,12 @@ import EventForm from './EventForm.jsx'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { fetchEvent, queryClient, updateEvent } from '../../util/http.js'
 import ErrorBlock from '../UI/ErrorBlock.jsx'
-import LoadingIndicator from '../UI/LoadingIndicator.jsx'
 
 export default function EditEvent() {
 	const navigate = useNavigate()
 	const { id } = useParams()
 
-	const { data, isPending, isError, error } = useQuery({
+	const { data, isError, error } = useQuery({
 		queryKey: ['events', id],
 		queryFn: ({ signal }) => fetchEvent({ signal, id }),
 	})
@@ -43,11 +42,6 @@ export default function EditEvent() {
 
 	return (
 		<Modal onClose={handleClose}>
-			{isPending && (
-				<div className='center'>
-					<LoadingIndicator />
-				</div>
-			)}
 			{isError && (
 				<>
 					<ErrorBlock
@@ -73,4 +67,11 @@ export default function EditEvent() {
 			)}
 		</Modal>
 	)
+}
+
+export function loader({ params }) {
+	return queryClient.fetchQuery({
+		queryKey: ['events', params.id],
+		queryFn: ({ signal }) => fetchEvent({ signal, id: params.id }),
+	})
 }
